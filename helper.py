@@ -1,6 +1,7 @@
 import re
 import os
 import numpy as np
+# from collections import OrderedDict
 from nltk.stem import WordNetLemmatizer
 from nltk.corpus import stopwords
 
@@ -65,15 +66,26 @@ def load_glove(embedding_dim=50):
             embedding[word] = vec
     return embedding
 
+# todo: some words in vocabulary are not included in the glove
+# totoal words in embedding matrix (17715)
+# totoal tokenized (20000)
 
-def create_embedding_matrix(vocabulary, embedding_index):
-    embeddings = {}
-    for voc in embedding_index:
+
+def create_embedding_dict(vocabulary, embedding_dim):
+    glove = load_glove(embedding_dim)
+
+    embeddings = OrdereDict()
+    for voc in glove:
         lemma = lemmatizer.lemmatize(voc)
         if lemma in vocabulary:
             if not embeddings.get(lemma):
-                embeddings[lemma] = [embedding_index[voc]]
+                embeddings[lemma] = [glove[voc]]
             else:
-                embeddings[lemma].append(embedding_index[voc])
+                embeddings[lemma].append(glove[voc])
     embeddings = {k: np.array(v).mean(axis=0) for k, v in embeddings.items()}
     return embeddings
+
+
+def embedding_embedding_dict(vocabulary, embedding_dim):
+    embedding_index = create_embedding_dict(vocabulary, embedding_dim)
+    return np.array(list(embedding_index.values()))
