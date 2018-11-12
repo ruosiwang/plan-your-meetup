@@ -41,7 +41,6 @@ onehot_labels = to_categorical(labels)
 X_train, X_test, y_train, y_test = \
     train_test_split(sequences, onehot_labels, test_size=0.2, random_state=42)
 
-
 # # ----------- WORD EMBEDDING --------------------------
 
 # load glove embedding
@@ -50,6 +49,6 @@ embedding_matrix = h.get_embedding_matrix(tokenizer.word_index, glove,
                                           MAX_NUM_WORDS, EMBEDDING_DIM)
 
 # Conv NN
-cnn = k.build_LSTM(embedding_matrix, SEQ_MAXLEN, CATEGORY_NUM)
+cnn = k.build_DNN(embedding_matrix, SEQ_MAXLEN, CATEGORY_NUM, DNN_type="MLP")
 cnn.fit(X_train, y_train, batch_size=128, epochs=5,
         validation_split=0.2)
