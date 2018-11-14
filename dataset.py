@@ -188,15 +188,25 @@ def load_group(field_list):
     return info
 
 
-def label_transform(categories):
+def _get_category_mapping(categories, file_path):
     counts = Counter(categories)
-    ranks = sorted(counts.items(), key=lambda x: x[1], reverse=True)
-    mapping = {t[0]: i for i, t in enumerate(ranks)}
-    labels = list(map(lambda cat: mapping[cat], categories))
-    return labels, mapping
+    ranked = sorted(counts, key=counts.get, reverse=True)
+    mapping = {ctg: i for i, ctg in enumerate(ranked)}
+    pickle.dump(mapping, open(file_path, 'wb'))
+    return mapping
 
 
-def prepare_dateset(descriptions, labels, category_num=10, sample_balance=True):
+def label_transform(categories):
+    file_path = os.path.join(DATA_DIR, 'category_mapping')
+    try:
+        mapping = pickle.load(open(file_path, 'rb'))
+    except FileNotFoundError:
+        mapping = _get_category_mapping(categories, file_path)
+    labels = [mapping[cat] for cat in categories]
+    return labels
+
+
+def prepare_dateset(descriptions, labels, category_num=None, sample_balance=False):
 
     indicies = {l: [] for l in range(0, category_num)}
     for idx, (dscrp, label) in enumerate(zip(descriptions, labels)):
