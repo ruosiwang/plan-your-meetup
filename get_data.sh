@@ -14,9 +14,18 @@ if [ ! -f groups.json.gz ]; then
 fi
 
 if [ ! -d glove.6B ]; then
-   mkdir glove.6B    
+   mkdir glove.6B
    wget http://nlp.stanford.edu/data/glove.6B.zip
    unzip glove.6B.zip
    mv glove.6B.*.txt glove.6B
    rm glove.6B.zip
-fi 
+fi
+cd ..
+
+if [ ! -d models ]; then
+    mkdir models
+    cd models
+    mkdir sklearn keras
+fi
+
+cd ..

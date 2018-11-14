@@ -9,6 +9,7 @@ from nltk.corpus import stopwords
 from sklearn.base import BaseEstimator, TransformerMixin
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.feature_extraction.text import CountVectorizer
+from sklearn.metrics import confusion_matrix, classification_report
 
 
 GLOVE_DIR = 'data/glove.6B'
@@ -134,3 +135,12 @@ class TfidfEmbeddingTransformer(BaseEstimator, TransformerMixin):
                                 [np.zeros(self.dim)], axis=0)
                         for words in X
                         ])
+
+
+def get_evaluations(model, X_val, y_val):
+    y_pred = model.predict(X_val)
+    clf_report = classification_report(y_val, y_pred)
+    print(clf_report)
+    conf_mat = confusion_matrix(y_val, y_pred)
+    return {'clf_report': clf_report,
+            'conf_mat': conf_mat}

@@ -1,7 +1,24 @@
+import os
+import time
+
+from keras.callbacks import EarlyStopping, ModelCheckpoint
 from keras.layers import Dense, GlobalMaxPooling1D, Dropout, CuDNNGRU, GRU
 from keras.layers import Conv1D, MaxPooling1D, Embedding, Flatten
 from keras.models import Sequential
 from keras.initializers import Constant
+
+MODEL_DIR = 'models/keras'
+
+
+def set_callback(model_name):
+    timestamp = int(time.time())
+    filename = f'{model_name}_{timestamp}'
+    filepath = os.path.join(MODEL_DIR, filename)
+    callbacks = [EarlyStopping(monitor='val_loss', patience=2),
+                 ModelCheckpoint(filepath=filepath,
+                                 monitor='val_loss',
+                                 save_best_only=True)]
+    return callbacks
 
 
 def build_DNN(embedding_matrix, max_sequence_length,
