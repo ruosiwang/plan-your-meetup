@@ -1,5 +1,6 @@
 import re
 import os
+import math
 import numpy as np
 from collections import defaultdict
 
@@ -23,19 +24,22 @@ def clean_text(doc, lemmatize=False):
     """
     text_cleaning
     """
-    # Remove HTML tags
-    no_html = re.sub('<[^<]+?>', '', doc)
-    # Remove non-letters
-    words_only = re.sub("[^a-zA-Z]", " ", no_html)
-    # lemmatize (only include words with more than 3 characters)
-    words = []
-    for word in words_only.lower().split():
-        if len(word) >= 3 and (word not in STOP_WORDS):
-            if lemmatize:
-                words.append(lemmatizer.lemmatize(word))
-            else:
-                words.append(word)
-    return " ".join(words)
+    try:
+        # Remove HTML tags
+        no_html = re.sub('<[^<]+?>', '', doc)
+        # Remove non-letters
+        words_only = re.sub("[^a-zA-Z]", " ", no_html)
+        # lemmatize (only include words with more than 3 characters)
+        words = []
+        for word in words_only.lower().split():
+            if len(word) >= 3 and (word not in STOP_WORDS):
+                if lemmatize:
+                    words.append(lemmatizer.lemmatize(word))
+                else:
+                    words.append(word)
+        return " ".join(words)
+    except TypeError:
+        return None
 
 
 def clean_texts(documents):
@@ -144,3 +148,36 @@ def get_evaluations(model, X_val, y_val):
     conf_mat = confusion_matrix(y_val, y_pred)
     return {'clf_report': clf_report,
             'conf_mat': conf_mat}
+
+
+def merc_x(lon):
+    """
+    source: https://wiki.openstreetmap.org/wiki/Mercator#Python_implementation
+    by Paulo Silva, based on all code published above, 13:32, 15.2.2008
+    """
+    r_major = 6378137.000
+    return r_major * math.radians(lon)
+
+
+def merc_y(lat):
+    """
+    source: https://wiki.openstreetmap.org/wiki/Mercator#Python_implementation
+    by Paulo Silva, based on all code published above, 13:32, 15.2.2008
+    """
+    if lat > 89.5:
+        lat = 89.5
+    if lat < -89.5:
+        lat = -89.5
+    r_major = 6378137.000
+    r_minor = 6356752.3142
+    temp = r_minor / r_major
+    eccent = math.sqrt(1 - temp**2)
+    phi = math.radians(lat)
+    sinphi = math.sin(phi)
+    con = eccent * sinphi
+    com = eccent / 2
+    con = ((1.0 - con) / (1.0 + con))**com
+    ts = math.tan((math.pi / 2 - phi) / 2) / con
+    y = 0 - r_major * math.log(ts)
+    y += 29000 # without this step, the transfromation was off
+    return y
