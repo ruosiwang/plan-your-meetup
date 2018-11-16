@@ -20,7 +20,7 @@ The fetched raw dataset is around 20 GB and includes 100000 meetup groups with 0
 
 ### Solutions
 
-To tackle these challenges, I will buld a **hybrid recommender system** which combined *content, *demographic* and *collaborative filtering*.
+To tackle these challenges, I will buld a **hybrid recommender system** which combined *content*, *demographic* and *collaborative filtering*.
 
 
 * **demographic filtering** all recommendations were limited to the same city of the query.
