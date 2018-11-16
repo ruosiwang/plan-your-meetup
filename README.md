@@ -6,7 +6,7 @@ The goal of this project is to build a **venue recommender** for *meetup group o
 ### Dataset
 The dataset was fetched from the [*Meetup API*](https://www.meetup.com/meetup_api/) utilizing a [python API client](https://pypi.org/project/meetup-api/). In particular, I first identified the Meetup groups with more than 100 members in the top 30 largest [US cities](https://en.wikipedia.org/wiki/List_of_United_States_cities_by_population) and then gathered the meetup details associated with these groups between 2010 and 2018. 
 
-The fetched raw dataset is around 10 GB. 
+The fetched raw [dataset](https://www.kaggle.com/ruosiwang/meetup) is around 10 GB. 
 
 ### Challenges
 
